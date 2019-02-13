@@ -26,8 +26,24 @@ class Router
         $path = $this->getPath();
         $method = $_SERVER['REQUEST_METHOD'];
 
-        $func = $this->registered["$method $path"];
-        $func();
+        if(isset($this->registered["$method $path"]))
+        {
+            $func = $this->registered["$method $path"];
+            if(is_callable($func))
+                return $func();
+            else
+            {
+                $temp = explode('@',$func);
+                $class_name = $temp[0];
+                $function_name = $temp[1];
+                require "$class_name.php";
+                $controller = new $class_name();
+                return $controller->$function_name();
+            }                
+        }
+
+        http_response_code(404);
+        echo "not found bro";
     }
 
     public function get($path, $func)
