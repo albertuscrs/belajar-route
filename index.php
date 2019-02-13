@@ -20,5 +20,7 @@
     // });
 
     $router->get('test','FooController@bar');
+    $router->post('product','ProductController@create');
+    $router->get('product','ProductController@index');
 
     $router->run();
